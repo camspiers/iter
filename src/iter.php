@@ -522,11 +522,7 @@ function toIter($iterable) {
     if ($iterable instanceof \IteratorAggregate) {
         return $iterable->getIterator();
     }
-    return call_user_func(function() use ($iterable) {
-        foreach ($iterable as $key => $value) {
-            yield $key => $value;
-        }
-    });
+    return toGenerator($iterable);
 }
 
 function toArray($iterable) {
@@ -543,6 +539,27 @@ function toArrayWithKeys($iterable) {
         $array[$key] = $value;
     }
     return $array;
+}
+
+/**
+ * Takes an array and yields its keys and values
+ * 
+ * Examples:
+ * 
+ *      iter\toGenerator([1, 2, 3])
+ *      => iter(1, 2, 3)
+ *
+ *      iter\toGenerator(['a' => 1, 'b' => 2, 'c' => 3])
+ *      => iter('a' => 1, 'b' => 2, 'c' => 3)
+ * 
+ * @param array $iterable
+ * @return \Generator
+ */
+function toGenerator($iterable)
+{
+    foreach ($iterable as $key => $value) {
+        yield $key => $value;
+    }
 }
 
 /*
